@@ -24,9 +24,6 @@ public class ObjectDataSelectAdapter extends RecyclerView.Adapter<ObjectDataSele
 
     private TextView textView;
 
-    public interface ObjectSelectItemOnClickListener {
-        void onDataSelectItemClickListener(AlertDialog dialog, List<?> datalist, int postion, TextView textView);
-    }
 
     public ObjectDataSelectAdapter(AlertDialog dialog, Context context, ObjectSelectItemOnClickListener mInterface, TextView textView) {
         mContext = context;

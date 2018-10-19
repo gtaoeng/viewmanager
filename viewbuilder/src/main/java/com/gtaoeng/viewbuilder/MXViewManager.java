@@ -26,20 +26,11 @@ import java.util.Map;
 
 import static android.widget.LinearLayout.VERTICAL;
 
-public class MXViewManager implements ObjectDataSelectAdapter.ObjectSelectItemOnClickListener {
+public class MXViewManager implements ObjectSelectItemOnClickListener {
     private Context context;
     private LinearLayout rootView;
     private HashMap<String, Object> textViews;
 
-    public interface ItemOnClickListener {
-        void onSelectCreateListener(Object object);
-
-        void onSelectItemListener(Object object);
-
-        void onSelectItemDisableListener(Object object);
-
-        void onLocationListener(Object object);
-    }
 
     private ItemOnClickListener listener;
 
@@ -622,7 +613,7 @@ public class MXViewManager implements ObjectDataSelectAdapter.ObjectSelectItemOn
         varietiesAdapter.setDataList(dialogData);
     }
 
-    public static void showSelectDialog(Context context, List<?> dialogData, TextView textView, ObjectDataSelectAdapter.ObjectSelectItemOnClickListener listener) {
+    public static void showSelectDialog(Context context, List<?> dialogData, TextView textView, ObjectSelectItemOnClickListener listener) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_select_list, null);
         AlertDialog dialog = new AlertDialog.Builder(context).create();
