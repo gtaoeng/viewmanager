@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface MXField {
 
-    enum FeldType {NormalType, NumberType, FloatType, NoteType, PhoneType, SelectType, DateType,MapType}
+    enum FeldType {NormalType, NumberType, FloatType, NoteType, PhoneType, SelectType, MultipleSelectType, DateType, MapType}
 
     String nameEn() default "";
 

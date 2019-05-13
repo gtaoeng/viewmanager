@@ -11,6 +11,7 @@ public class MXViewCls {
     public final static int NoteType = 3;
     public final static int PhoneType = 4;
     public final static int SelectType = 5;
+    public final static int MultipleSelectType = 51;
     public final static int DateType = 6;
     public final static int MapType = 7;
     public final static int PswType =8;

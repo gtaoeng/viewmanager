@@ -7,6 +7,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,6 +62,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
                         addTextView(viewCls);
                         break;
                     case MXViewCls.SelectType:
+                    case MXViewCls.MultipleSelectType:
                         addComboxView(viewCls);
                         break;
                     case MXViewCls.DateType:
@@ -129,10 +132,13 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
             public void onClick(View v) {
 
                 if (viewCls.getCanEdit()) {
-
                     TextView valueText = (TextView) v.getTag();
                     List<?> datas = (List<?>) valueText.getTag(R.id.tag_first);
-                    showSelectDialog(datas, valueText);
+                    if (viewCls.getFieldType() == MXViewCls.SelectType) {
+                        showSelectDialog(datas, valueText);
+                    } else if (viewCls.getFieldType() == MXViewCls.MultipleSelectType) {
+                        showMultipleSelectDialog(datas, valueText);
+                    }
                 } else {
                     if (MXViewManager.this.listener != null) {
                         MXViewManager.this.listener.onSelectItemDisableListener(viewCls);
@@ -629,6 +635,59 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         final ObjectDataSelectAdapter varietiesAdapter = new ObjectDataSelectAdapter(dialog, context, listener, textView);
         rlv_data_list.setAdapter(varietiesAdapter);
         varietiesAdapter.setDataList(dialogData);
+    }
+
+    private void showMultipleSelectDialog(final List<?> dialogData, final TextView textView) {
+        if (inflater == null) {
+            inflater = LayoutInflater.from(context);
+        }
+        View view = inflater.inflate(R.layout.dialog_select_list_multiple, null);
+        final AlertDialog flowersDialog = new AlertDialog.Builder(context).create();
+        flowersDialog.setCancelable(false);
+        flowersDialog.show();
+        flowersDialog.getWindow().setContentView(view);
+        flowersDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+
+        RecyclerView rlv_data_list = view.findViewById(R.id.rlv_data_list);
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        rlv_data_list.setLayoutManager(manager);
+        rlv_data_list.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
+        final ObjectDataMultipleSelectAdapter varietiesAdapter = new ObjectDataMultipleSelectAdapter(flowersDialog, context, textView);
+        rlv_data_list.setAdapter(varietiesAdapter);
+        varietiesAdapter.setDataList(dialogData);
+        view.findViewById(R.id.tv_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (flowersDialog != null && flowersDialog.isShowing()) {
+                    flowersDialog.dismiss();
+                }
+
+                MXViewCls mxViewCls = (MXViewCls) textView.getTag(R.id.tag_three);
+
+                String names = "";
+                List<MXSelectCls> list = new ArrayList<>();
+                for (Object object : dialogData) {
+                    if (object.getClass() == MXSelectCls.class) {
+                        MXSelectCls mxSelectCls = (MXSelectCls) object;
+                        if (mxSelectCls.isChecked()) {
+                            list.add(mxSelectCls);
+                            if (!TextUtils.isEmpty(names)) {
+                                names += ",";
+                            }
+                            names += mxSelectCls.getName();
+                        }
+                    }
+                }
+
+                textView.setText(names);
+                textView.setTag(R.id.tag_second, list);
+                if (listener != null) {
+                    listener.onSelectItemListener(mxViewCls);
+                }
+
+            }
+        });
     }
 
     private void showSelectDate(Context context, final TextView textView) {

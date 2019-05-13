@@ -6,6 +6,7 @@ public class MXSelectCls {
 
     private String name;
     private Object object;
+    private boolean checked;
 
     public String getName() {
         return name;
@@ -21,5 +22,13 @@ public class MXSelectCls {
 
     public void setObject(Object object) {
         this.object = object;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 }
