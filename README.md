@@ -22,7 +22,7 @@ allprojects {
             implementation 'com.android.support:support-v4:28.0.0'
             
             //构建包
-            implementation 'com.github.gtaoeng:viewmanager:1.5' 
+            implementation 'com.github.gtaoeng:viewmanager:1.8' 
 	}
 ```
 
