@@ -545,6 +545,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
                 TextView valueText = (TextView) object;
                 View parentView = (View) valueText.getParent();
 
+                
                 if (bEnable) {
                     valueText.setTextColor(context.getResources().getColor(R.color.black));
                 } else {
