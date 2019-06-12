@@ -538,6 +538,25 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         }
     }
 
+    public void changeControlState(boolean bEnable) {
+        for (String key : textViews.keySet()) {
+            Object object = textViews.get(key);
+            if (object instanceof TextView) {
+                TextView valueText = (TextView) object;
+                View parentView = (View) valueText.getParent();
+
+                if (bEnable) {
+                    valueText.setTextColor(context.getResources().getColor(R.color.black));
+                } else {
+                    valueText.setTextColor(context.getResources().getColor(R.color.gray2));
+                }
+                valueText.setEnabled(bEnable);
+                parentView.setEnabled(bEnable);
+
+            }
+        }
+    }
+
     /**
      * 更新选择器值
      *
