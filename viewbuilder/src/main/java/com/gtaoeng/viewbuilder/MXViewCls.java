@@ -12,6 +12,7 @@ public class MXViewCls {
     public final static int PhoneType = 4;
     public final static int SelectType = 5;
     public final static int MultipleSelectType = 51;
+    public final static int StaticSelectType = 52;
     public final static int DateType = 6;
     public final static int MapType = 7;
     public final static int PswType =8;
@@ -47,6 +48,9 @@ public class MXViewCls {
      * 当fieldType=4时选择数据结构
      */
     private List<?> selectDatas;
+
+    //StaticSelectType 时有效
+    private Object selectData;
 
     public String getDisplayName() {
         return displayName;
@@ -102,5 +106,13 @@ public class MXViewCls {
 
     public void setSelectDatas(List<?> selectDatas) {
         this.selectDatas = selectDatas;
+    }
+
+    public Object getSelectData() {
+        return selectData;
+    }
+
+    public void setSelectData(Object selectData) {
+        this.selectData = selectData;
     }
 }

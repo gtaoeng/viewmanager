@@ -61,6 +61,9 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
                     case MXViewCls.PswType:
                         addTextView(viewCls);
                         break;
+                    case MXViewCls.StaticSelectType:
+                        addStaticComboxView(viewCls);
+                        break;
                     case MXViewCls.SelectType:
                     case MXViewCls.MultipleSelectType:
                         addComboxView(viewCls);
@@ -159,6 +162,35 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
 
         rootView.addView(rowLayout);
 
+        textViews.put(viewCls.getFieldName(), valueText);
+
+    }
+
+    private void addStaticComboxView(final MXViewCls viewCls) {
+        LinearLayout rowLayout = getRowLinearLayout();
+        TextView lableName = getLabelTextView();
+        lableName.setText(viewCls.getDisplayName());
+        rowLayout.addView(lableName);
+        View.OnClickListener listener = null;
+
+        listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (viewCls.getCanEdit()) {
+                    MXViewManager.this.listener.onSelectItemListener(viewCls);
+                }
+            }
+        };
+
+        TextView valueText = getComboxLayout(rowLayout, listener);
+        if (!viewCls.getCanEdit()) {
+            valueText.setHint("");
+            valueText.setTextColor(context.getResources().getColor(R.color.gray2));
+        }
+        valueText.setText(viewCls.getFieldValue());
+        valueText.setTag(R.id.tag_second, viewCls.getSelectData());
+        rootView.addView(rowLayout);
         textViews.put(viewCls.getFieldName(), valueText);
 
     }
@@ -494,6 +526,31 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         }
     }
 
+    public void updateViewsFields(MXViewCls mxViewCls) {
+
+        String fieldName = mxViewCls.getFieldName();
+        if (textViews.containsKey(fieldName)) {
+            Object object = textViews.get(fieldName);
+            if (object.getClass() == TextView.class) {
+                TextView tv = (TextView) object;
+                tv.setText(mxViewCls.getFieldValue());
+                if (mxViewCls.getFieldType() == MXViewCls.StaticSelectType) {
+                    tv.setTag(R.id.tag_second, mxViewCls.getSelectData());
+                } else if (mxViewCls.getFieldType() == MXViewCls.SelectType
+                        || mxViewCls.getFieldType() == MXViewCls.MultipleSelectType) {
+                    List<?> datas = mxViewCls.getSelectDatas();
+                    updateSelectDatas(fieldName, datas);
+                }
+
+            } else if (object.getClass() == EditText.class) {
+                EditText tv = (EditText) object;
+                tv.setText(mxViewCls.getFieldValue());
+            }
+
+
+        }
+    }
+
     public Object getTextViewByFieldName(String fieldName) {
 
         if (textViews.containsKey(fieldName)) {
@@ -538,26 +595,6 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         }
     }
 
-    public void changeControlState(boolean bEnable) {
-        for (String key : textViews.keySet()) {
-            Object object = textViews.get(key);
-            if (object instanceof TextView) {
-                TextView valueText = (TextView) object;
-                View parentView = (View) valueText.getParent();
-
-                
-                if (bEnable) {
-                    valueText.setTextColor(context.getResources().getColor(R.color.black));
-                } else {
-                    valueText.setTextColor(context.getResources().getColor(R.color.gray2));
-                }
-                valueText.setEnabled(bEnable);
-                parentView.setEnabled(bEnable);
-
-            }
-        }
-    }
-
     /**
      * 更新选择器值
      *
@@ -575,6 +612,27 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
             }
         }
     }
+
+    public void changeControlState(boolean bEnable) {
+        for (String key : textViews.keySet()) {
+            Object object = textViews.get(key);
+            if (object instanceof TextView) {
+                TextView valueText = (TextView) object;
+                View parentView = (View) valueText.getParent();
+
+
+                if (bEnable) {
+                    valueText.setTextColor(context.getResources().getColor(R.color.black));
+                } else {
+                    valueText.setTextColor(context.getResources().getColor(R.color.gray2));
+                }
+                valueText.setEnabled(bEnable);
+                parentView.setEnabled(bEnable);
+
+            }
+        }
+    }
+
 
     /**
      * 根据字段名获取界面值

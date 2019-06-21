@@ -58,6 +58,10 @@ public class MXFieldsTools {
                             mxViewCls.setFieldType(MXViewCls.MultipleSelectType);
                         }
                         break;
+                        case StaticSelectType: {
+                            mxViewCls.setFieldType(MXViewCls.StaticSelectType);
+                        }
+                        break;
                         case SelectType: {
                             mxViewCls.setFieldType(MXViewCls.SelectType);
                             if (canCreate) {
