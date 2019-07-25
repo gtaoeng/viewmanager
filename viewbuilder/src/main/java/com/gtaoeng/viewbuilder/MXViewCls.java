@@ -44,7 +44,10 @@ public class MXViewCls {
      * 排版顺序
      */
     private int sort;
-
+    /**
+     * 是否必填
+     */
+    private boolean isMust;
     /**
      * 当fieldType=4时选择数据结构
      */
@@ -116,4 +119,14 @@ public class MXViewCls {
     public void setSelectData(Object selectData) {
         this.selectData = selectData;
     }
+
+
+    public boolean isMust() {
+        return isMust;
+    }
+
+    public void setMust(boolean must) {
+        isMust = must;
+    }
+
 }

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,6 +88,9 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         LinearLayout rowLayout = getRowLinearLayout();
         TextView lableName = getLabelTextView();
         lableName.setText(viewCls.getDisplayName());
+        if (viewCls.isMust()) {
+            lableName.setTextColor(context.getResources().getColor(R.color.red));
+        }
         rowLayout.addView(lableName);
 
         EditText valueText = null;
@@ -127,6 +131,9 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         LinearLayout rowLayout = getRowLinearLayout();
         TextView lableName = getLabelTextView();
         lableName.setText(viewCls.getDisplayName());
+        if (viewCls.isMust()) {
+            lableName.setTextColor(context.getResources().getColor(R.color.red));
+        }
         rowLayout.addView(lableName);
         View.OnClickListener listener = null;
 
@@ -170,6 +177,9 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         LinearLayout rowLayout = getRowLinearLayout();
         TextView lableName = getLabelTextView();
         lableName.setText(viewCls.getDisplayName());
+        if (viewCls.isMust()) {
+            lableName.setTextColor(context.getResources().getColor(R.color.red));
+        }
         rowLayout.addView(lableName);
         View.OnClickListener listener = null;
 
@@ -199,6 +209,9 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         LinearLayout rowLayout = getRowLinearLayout();
         TextView lableName = getLabelTextView();
         lableName.setText(viewCls.getDisplayName());
+        if (viewCls.isMust()) {
+            lableName.setTextColor(context.getResources().getColor(R.color.red));
+        }
         rowLayout.addView(lableName);
 
 
@@ -228,6 +241,9 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         LinearLayout rowLayout = getRowLinearLayout();
         TextView lableName = getLabelTextView();
         lableName.setText(viewCls.getDisplayName());
+        if (viewCls.isMust()) {
+            lableName.setTextColor(context.getResources().getColor(R.color.red));
+        }
         rowLayout.addView(lableName);
 
 
@@ -491,6 +507,35 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
             }
         }
         return datas;
+    }
+
+    /**
+     * 检查必填项
+     *
+     * @param mxViewClsList
+     */
+    public boolean checkMustFields(List<MXViewCls> mxViewClsList) {
+        for (int i = 0; i < mxViewClsList.size(); i++) {
+            MXViewCls mxViewCls = mxViewClsList.get(i);
+            if (mxViewCls.isMust()) {
+                String fieldName = mxViewCls.getFieldName();
+                String val = null;
+                Object object = textViews.get(fieldName);
+                if (object instanceof TextView) {
+                    TextView tv = (TextView) object;
+                    val = tv.getText().toString();
+
+                } else if (object instanceof EditText) {
+                    EditText tv = (EditText) object;
+                    val = tv.getText().toString();
+                }
+                if (TextUtils.isEmpty(val)) {
+                    Toast.makeText(context, "必填项" + mxViewCls.getDisplayName() + "未填写", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

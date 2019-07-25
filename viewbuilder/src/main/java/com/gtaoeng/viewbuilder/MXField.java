@@ -20,4 +20,6 @@ public @interface MXField {
     boolean canCreate() default false;
 
     int sort() default 9999;
+
+    boolean isMust() default  false;
 }

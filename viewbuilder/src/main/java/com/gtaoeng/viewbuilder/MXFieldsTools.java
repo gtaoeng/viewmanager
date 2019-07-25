@@ -18,6 +18,7 @@ public class MXFieldsTools {
                     MXField.FeldType FieleTy = annotation.fieldType();
                     boolean canCreate = annotation.canCreate();
                     int sort = annotation.sort();
+                    boolean isMust = annotation.isMust();
                     field.setAccessible(true);
                     Object valObj = field.get(obj);
                     MXViewCls mxViewCls = new MXViewCls();
@@ -25,6 +26,7 @@ public class MXFieldsTools {
                     mxViewCls.setFieldName(field.getName());
                     mxViewCls.setCanEdit(true);
                     mxViewCls.setSort(sort);
+                    mxViewCls.setMust(isMust);
                     if (valObj != null) {
 //                        if (valObj.getClass() == String.class) {
 //                            mxViewCls.setFieldValue(valObj + "");
