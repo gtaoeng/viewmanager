@@ -1,10 +1,13 @@
 package com.gtaoeng.demoapplication;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.gtaoeng.viewbuilder.ItemOnClickListener;
 import com.gtaoeng.viewbuilder.MXFieldsTools;
 import com.gtaoeng.viewbuilder.MXSelectCls;
 import com.gtaoeng.viewbuilder.MXViewCls;
@@ -16,8 +19,11 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    MXViewManager mxViewManager;
     ClassModel monitorBean;
+    MXViewManager mxViewManager;
+    List<MXViewCls> mxViewClsList;
+
+    boolean bEdit = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,41 +34,81 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.rightButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bEdit = !bEdit;
 
-                Map<String, String> datas = mxViewManager.getViewsValuse();
-                // ClassUtil.buildClassData(monitorBean, datas);
+                mxViewManager.changeControlState(bEdit);
 
+                saveTest();
             }
         });
 
         LinearLayout view_content = findViewById(R.id.view_content);
         monitorBean = new ClassModel();
-        List<MXViewCls> mxViewClsList = MXFieldsTools.loadField(monitorBean);
+        monitorBean.setName("撒旦撒旦");
+        monitorBean.setName2("阿斯顿撒旦萨达萨达萨达萨达萨达萨达萨达萨达萨达是萨达萨达萨达萨达萨达飒飒打撒");
+
+        // String uerId = data.getQueryParameter("userId");
+        String uerId = this.getIntent().getStringExtra("arguments");
+
+        if (!TextUtils.isEmpty(uerId)) {
+            monitorBean.setName(uerId);
+        }
+
+        mxViewClsList = MXFieldsTools.loadField(monitorBean);
         mxViewManager = new MXViewManager(this, view_content);
-
-        List<String> yesOrNo = new ArrayList<>();
-        yesOrNo.add("是");
-        yesOrNo.add("否");
-
-        List<User> users = new ArrayList<>();
 
 
         for (MXViewCls mxViewCls : mxViewClsList) {
-
-            if ("bm".equals(mxViewCls.getFieldName())) {
-                mxViewCls.setCanEdit(false);
-            } else if ("name2".equals(mxViewCls.getFieldName())) {
-                mxViewCls.setSelectDatas(yesOrNo);
-            } else if ("name3".equals(mxViewCls.getFieldName())) {
-                mxViewCls.setSelectDatas( getAllUsers());
-            } else if ("isWarn".equals(mxViewCls.getFieldName())) {
-                mxViewCls.setSelectDatas(yesOrNo);
+            if ("select".equals(mxViewCls.getFieldName())) {
+                User user = new User();
+                user.setId(-1);
+                user.setName("初始");
+                mxViewCls.setSelectData(user);
+            }
+            if ("name3".equals(mxViewCls.getFieldName())) {
+                mxViewCls.setSelectDatas(getAllUsers());
+            }
+            if ("name2".equals(mxViewCls.getFieldName())) {
+                mxViewCls.setSelectDatas(getAllUsers());
             }
 
-
         }
-
+        mxViewManager.setFontSize(18);
+         mxViewManager.setViewOrientation(LinearLayout.HORIZONTAL);
         mxViewManager.buildView(mxViewClsList);
+
+
+        mxViewManager.setListener(new ItemOnClickListener() {
+            @Override
+            public void onSelectCreateListener(Object object) {
+
+            }
+
+            @Override
+            public void onSelectItemListener(Object object) {
+                if (object instanceof MXViewCls) {
+                    MXViewCls mxViewCls = (MXViewCls) object;
+                    if (mxViewCls.getFieldName().equals("select")) {
+                        User user = new User();
+                        user.setId(100);
+                        user.setName("修改");
+                        mxViewCls.setFieldValue(user.getName());
+                        mxViewCls.setSelectData(user);
+                        mxViewManager.updateViewsFields(mxViewCls);
+                    }
+                }
+            }
+
+            @Override
+            public void onSelectItemDisableListener(Object object) {
+
+            }
+
+            @Override
+            public void onLocationListener(Object object) {
+
+            }
+        });
     }
 
     private List<MXSelectCls> getAllUsers() {
@@ -81,4 +127,19 @@ public class MainActivity extends AppCompatActivity {
         return selectCls;
 
     }
+
+    private void saveTest() {
+
+        if (!mxViewManager.checkMustFields(mxViewClsList)) {
+            return;
+        }
+
+        Map<String, String> datas = mxViewManager.getViewsValuse();
+        Object object1 = mxViewManager.getSelectViewValueByKey("select");
+        if (object1 instanceof User) {
+            datas.put("select", ((User) object1).getId() + "");
+        }
+    }
+
+
 }

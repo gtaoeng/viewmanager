@@ -1,12 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    signingConfigs {
+        config {
+            keyAlias 'mrxc'
+            keyPassword 'mrxc2016'
+            // storeFile file('/Users/never88gone/Documents/code/MRXC/mrxc.keystore')
+            storeFile file('E:/code/mrxc.keystore')
+            storePassword 'mrxc2016'
+        }
+    }
+
+
     compileSdkVersion 28
-
-
     defaultConfig {
         applicationId "com.gtaoeng.demoapplication"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -18,7 +28,8 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 

@@ -34,6 +34,24 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private LinearLayout rootView;
     private HashMap<String, Object> textViews;
 
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    private int fontSize = 15;
+    public int getViewOrientation() {
+        return viewOrientation;
+    }
+
+    public void setViewOrientation(int viewOrientation) {
+        this.viewOrientation = viewOrientation;
+    }
+
+    private int viewOrientation = VERTICAL;
 
     private ItemOnClickListener listener;
 
@@ -282,26 +300,53 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
 
     private LinearLayout getRowLinearLayout() {
         LinearLayout oneLinearLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        llsub.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
-        oneLinearLayout.setLayoutParams(llsub);
-        oneLinearLayout.setBackground(context.getDrawable(R.drawable.gridground));
-        oneLinearLayout.setPadding(UIUtils.dp2Px(2), UIUtils.dp2Px(2), UIUtils.dp2Px(2), UIUtils.dp2Px(2));
-        oneLinearLayout.setOrientation(VERTICAL);
+        if (viewOrientation == VERTICAL) {
+            LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            llsub.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
+            oneLinearLayout.setLayoutParams(llsub);
+            oneLinearLayout.setBackground(context.getDrawable(R.drawable.gridground));
+            oneLinearLayout.setPadding(UIUtils.dp2Px(2), UIUtils.dp2Px(2), UIUtils.dp2Px(2), UIUtils.dp2Px(2));
+            oneLinearLayout.setOrientation(VERTICAL);
+        } else {
+            LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            llsub.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
+            oneLinearLayout.setLayoutParams(llsub);
+            oneLinearLayout.setBackground(context.getDrawable(R.drawable.gridground));
+            oneLinearLayout.setPadding(UIUtils.dp2Px(2), UIUtils.dp2Px(2), UIUtils.dp2Px(2), UIUtils.dp2Px(2));
+            oneLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        }
+
         return oneLinearLayout;
     }
 
     private TextView getLabelTextView() {
         TextView textView = new TextView(context);
-        RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
-        ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
-        textView.setGravity(Gravity.LEFT);
-        textView.setTextColor(context.getResources().getColor(R.color.black));
-        textView.setTextSize(UIUtils.dp2sp(15));
-        textView.setLayoutParams(ll_value_tv);
+        if (viewOrientation == VERTICAL) {
+            RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
+            ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
+            textView.setGravity(Gravity.LEFT);
+            textView.setTextColor(context.getResources().getColor(R.color.black));
+            textView.setTextSize(UIUtils.dp2sp(fontSize));
+            textView.setLayoutParams(ll_value_tv);
+        }
+        else
+        {
+
+            RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams( UIUtils.dp2Px(90),
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
+
+            ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
+            textView.setGravity(Gravity.CENTER_VERTICAL|Gravity.RIGHT);
+            textView.setTextColor(context.getResources().getColor(R.color.black));
+            textView.setTextSize(UIUtils.dp2sp(fontSize));
+            textView.setLayoutParams(ll_value_tv);
+
+        }
         return textView;
     }
 
@@ -309,7 +354,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private EditText getTextLayout(LinearLayout parentView) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(40));
+                UIUtils.dp2Px(fontSize+25));
         oneLayout.setLayoutParams(llsub);
         oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
@@ -324,7 +369,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         value_tv.setLayoutParams(ll_value_tv);
         value_tv.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         value_tv.setTextColor(context.getResources().getColor(R.color.black));
-        value_tv.setTextSize(UIUtils.dp2sp(12));
+        value_tv.setTextSize(UIUtils.dp2sp(fontSize));
         value_tv.setHint("请输入");
         value_tv.setGravity(Gravity.LEFT);
         oneLayout.addView(value_tv);
@@ -350,7 +395,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         value_tv.setLayoutParams(ll_value_tv);
         value_tv.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         value_tv.setTextColor(context.getResources().getColor(R.color.black));
-        value_tv.setTextSize(UIUtils.dp2sp(12));
+        value_tv.setTextSize(UIUtils.dp2sp(fontSize));
         value_tv.setHint("请输入");
         value_tv.setLines(3);
         value_tv.setGravity(Gravity.TOP);
@@ -365,7 +410,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private TextView getComboxLayout(LinearLayout parentView, View.OnClickListener listener) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(40));
+                UIUtils.dp2Px(fontSize+25));
         oneLayout.setLayoutParams(llsub);
         oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
@@ -384,13 +429,13 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         //内容
         TextView value_tv = new TextView(context);
         RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(20));
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
         ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
         value_tv.setLayoutParams(ll_value_tv);
         value_tv.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         value_tv.setTextColor(context.getResources().getColor(R.color.black));
-        value_tv.setTextSize(UIUtils.dp2sp(12));
+        value_tv.setTextSize(UIUtils.dp2sp(fontSize));
         value_tv.setHint("请选择");
         ll_value_tv.addRule(RelativeLayout.LEFT_OF, rid);
 
@@ -407,7 +452,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private TextView getDateLayout(LinearLayout parentView, View.OnClickListener listener) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(40));
+                UIUtils.dp2Px(fontSize+30));
         oneLayout.setLayoutParams(llsub);
         oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
@@ -426,13 +471,13 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         //内容
         TextView value_tv = new TextView(context);
         RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(20));
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
         ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
         value_tv.setLayoutParams(ll_value_tv);
         value_tv.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         value_tv.setTextColor(context.getResources().getColor(R.color.black));
-        value_tv.setTextSize(UIUtils.dp2sp(12));
+        value_tv.setTextSize(UIUtils.dp2sp(fontSize));
         value_tv.setHint("请选择");
         ll_value_tv.addRule(RelativeLayout.LEFT_OF, rid);
 
@@ -448,7 +493,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private TextView getMapLayout(LinearLayout parentView, View.OnClickListener listener) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(40));
+                UIUtils.dp2Px(fontSize+30));
         oneLayout.setLayoutParams(llsub);
         oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
@@ -467,13 +512,13 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         //内容
         TextView value_tv = new TextView(context);
         RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(20));
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
         ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
         value_tv.setLayoutParams(ll_value_tv);
         value_tv.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         value_tv.setTextColor(context.getResources().getColor(R.color.black));
-        value_tv.setTextSize(UIUtils.dp2sp(12));
+        value_tv.setTextSize(UIUtils.dp2sp(fontSize));
         value_tv.setHint("选择位置");
         ll_value_tv.addRule(RelativeLayout.LEFT_OF, rid);
 
