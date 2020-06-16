@@ -79,6 +79,18 @@ public class MXFieldsTools {
                         case MapType:
                             mxViewCls.setFieldType(MXViewCls.MapType);
                             break;
+                        case ScanType:
+                            mxViewCls.setFieldType(MXViewCls.ScanType);
+                            break;
+                        case SensorType:
+                            mxViewCls.setFieldType(MXViewCls.SensorType);
+                            break;
+                        case OcrCardType:
+                            mxViewCls.setFieldType(MXViewCls.OcrCardType);
+                            break;
+                        case OcrBankType:
+                            mxViewCls.setFieldType(MXViewCls.OcrBankType);
+                            break;
                         default:
                             mxViewCls.setFieldType(MXViewCls.NormalType);
                             break;

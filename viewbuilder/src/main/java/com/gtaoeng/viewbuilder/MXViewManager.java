@@ -43,6 +43,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     }
 
     private int fontSize = 15;
+
     public int getViewOrientation() {
         return viewOrientation;
     }
@@ -92,6 +93,12 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
                         break;
                     case MXViewCls.MapType:
                         addMapView(viewCls);
+                        break;
+                    case MXViewCls.ScanType:
+                    case MXViewCls.SensorType:
+                    case MXViewCls.OcrCardType:
+                    case MXViewCls.OcrBankType:
+                        addCustomView(viewCls);
                         break;
                     default:
                         addTextView(viewCls);
@@ -297,6 +304,50 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
 
     }
 
+    private void addCustomView(final MXViewCls viewCls) {
+        LinearLayout rowLayout = getRowLinearLayout();
+        TextView lableName = getLabelTextView();
+        lableName.setText(viewCls.getDisplayName());
+        if (viewCls.isMust()) {
+            lableName.setTextColor(context.getResources().getColor(R.color.red));
+        }
+        rowLayout.addView(lableName);
+
+
+        View.OnClickListener listener = null;
+
+        listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MXViewManager.this.listener != null) {
+                    MXViewManager.this.listener.onLocationListener(viewCls);
+                }
+            }
+        };
+        int drawableID = -1;
+        if (viewCls.getFieldType() == MXViewCls.ScanType) {
+            drawableID = R.drawable.icon_scan;
+        } else if (viewCls.getFieldType() == MXViewCls.SensorType) {
+            drawableID = R.drawable.icon_sensor;
+        } else if (viewCls.getFieldType() == MXViewCls.OcrCardType) {
+            drawableID = R.drawable.icon_ocr_card;
+        } else if (viewCls.getFieldType() == MXViewCls.OcrBankType) {
+            drawableID = R.drawable.icon_ocr_bank;
+        }
+        TextView valueText = getCustomLayout(rowLayout, drawableID, listener);
+        if (!viewCls.getCanEdit()) {
+            valueText.setHint("");
+            valueText.setTextColor(context.getResources().getColor(R.color.gray2));
+        }
+        valueText.setText(viewCls.getFieldValue());
+
+
+        rootView.addView(rowLayout);
+
+        textViews.put(viewCls.getFieldName(), valueText);
+
+    }
+
 
     private LinearLayout getRowLinearLayout() {
         LinearLayout oneLinearLayout = new LinearLayout(context);
@@ -332,16 +383,14 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
             textView.setTextColor(context.getResources().getColor(R.color.black));
             textView.setTextSize(UIUtils.dp2sp(fontSize));
             textView.setLayoutParams(ll_value_tv);
-        }
-        else
-        {
+        } else {
 
-            RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams( UIUtils.dp2Px(90),
+            RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams(UIUtils.dp2Px(90),
                     LinearLayout.LayoutParams.MATCH_PARENT);
             ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
 
             ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
-            textView.setGravity(Gravity.CENTER_VERTICAL|Gravity.RIGHT);
+            textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
             textView.setTextColor(context.getResources().getColor(R.color.black));
             textView.setTextSize(UIUtils.dp2sp(fontSize));
             textView.setLayoutParams(ll_value_tv);
@@ -354,7 +403,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private EditText getTextLayout(LinearLayout parentView) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(fontSize+25));
+                UIUtils.dp2Px(fontSize + 25));
         oneLayout.setLayoutParams(llsub);
         oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
@@ -410,7 +459,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private TextView getComboxLayout(LinearLayout parentView, View.OnClickListener listener) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(fontSize+25));
+                UIUtils.dp2Px(fontSize + 25));
         oneLayout.setLayoutParams(llsub);
         oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
@@ -452,7 +501,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private TextView getDateLayout(LinearLayout parentView, View.OnClickListener listener) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(fontSize+30));
+                UIUtils.dp2Px(fontSize + 30));
         oneLayout.setLayoutParams(llsub);
         oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
@@ -493,7 +542,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
     private TextView getMapLayout(LinearLayout parentView, View.OnClickListener listener) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                UIUtils.dp2Px(fontSize+30));
+                UIUtils.dp2Px(fontSize + 30));
         oneLayout.setLayoutParams(llsub);
         oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
@@ -530,6 +579,48 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
 
         return value_tv;
     }
+
+    private TextView getCustomLayout(LinearLayout parentView, int drawableID, View.OnClickListener listener) {
+        RelativeLayout oneLayout = new RelativeLayout(context);
+        LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                UIUtils.dp2Px(fontSize + 30));
+        oneLayout.setLayoutParams(llsub);
+        oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
+
+        //向下箭头
+        int rid = minrRID;
+        minrRID++;
+        ImageView imageView = new ImageView(context);
+        imageView.setId(rid);
+        RelativeLayout.LayoutParams ll_image = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ll_image.addRule(RelativeLayout.CENTER_VERTICAL);
+        ll_image.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        ll_image.setMargins(0, 0, UIUtils.dp2Px(10), 0);
+        imageView.setLayoutParams(ll_image);
+        imageView.setBackground(context.getDrawable(drawableID));
+        //内容
+        TextView value_tv = new TextView(context);
+        RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
+        ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
+        value_tv.setLayoutParams(ll_value_tv);
+        value_tv.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+        value_tv.setTextColor(context.getResources().getColor(R.color.black));
+        value_tv.setTextSize(UIUtils.dp2sp(fontSize));
+        value_tv.setHint("选择位置");
+        ll_value_tv.addRule(RelativeLayout.LEFT_OF, rid);
+
+        oneLayout.addView(imageView);
+        oneLayout.addView(value_tv);
+        oneLayout.setTag(value_tv);
+        oneLayout.setOnClickListener(listener);
+        parentView.addView(oneLayout);
+
+        return value_tv;
+    }
+
 
     //获取界面值
     public Map<String, String> getViewsValuse() {
