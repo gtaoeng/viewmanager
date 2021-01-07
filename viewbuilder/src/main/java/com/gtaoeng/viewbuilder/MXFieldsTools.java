@@ -47,6 +47,9 @@ public class MXFieldsTools {
                         case DateType:
                             mxViewCls.setFieldType(MXViewCls.DateType);
                             break;
+                        case TimeType:
+                            mxViewCls.setFieldType(MXViewCls.TimeType);
+                            break;
                         case NoteType:
                             mxViewCls.setFieldType(MXViewCls.NoteType);
                             break;

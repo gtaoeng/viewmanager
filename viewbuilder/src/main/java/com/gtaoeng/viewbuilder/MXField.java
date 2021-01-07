@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 public @interface MXField {
 
     enum FeldType {NormalType, NumberType, FloatType, NoteType, PhoneType,
-        SelectType,StaticSelectType, MultipleSelectType, DateType, MapType,
+        SelectType,StaticSelectType, MultipleSelectType, DateType,TimeType, MapType,
         ScanType,SensorType,
         OcrCardType,OcrBankType}
 

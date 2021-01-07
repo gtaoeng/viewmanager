@@ -18,6 +18,7 @@ public class MXViewCls {
     public final static int StaticSelectType = 10;
     public final static int ScanType = 11;
     public final static int SensorType = 12;
+    public final static int TimeType = 13;
     public final static int OcrCardType = 0xA01;
     public final static int OcrBankType = 0xA02;
     /**

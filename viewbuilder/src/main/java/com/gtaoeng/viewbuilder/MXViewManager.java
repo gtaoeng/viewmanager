@@ -2,6 +2,7 @@ package com.gtaoeng.viewbuilder;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -90,6 +92,9 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
                         break;
                     case MXViewCls.DateType:
                         addDateView(viewCls);
+                        break;
+                    case MXViewCls.TimeType:
+                        addTimeView(viewCls);
                         break;
                     case MXViewCls.MapType:
                         addMapView(viewCls);
@@ -252,6 +257,38 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
             };
         }
         TextView valueText = getDateLayout(rowLayout, listener);
+        valueText.setText(viewCls.getFieldValue());
+        // valueText.setTag(viewCls.getFieldName());
+
+
+        rootView.addView(rowLayout);
+
+        textViews.put(viewCls.getFieldName(), valueText);
+
+    }
+
+    private void addTimeView(final MXViewCls viewCls) {
+        LinearLayout rowLayout = getRowLinearLayout();
+        TextView lableName = getLabelTextView();
+        lableName.setText(viewCls.getDisplayName());
+        if (viewCls.isMust()) {
+            lableName.setTextColor(context.getResources().getColor(R.color.red));
+        }
+        rowLayout.addView(lableName);
+
+
+        View.OnClickListener listener = null;
+        if (viewCls.getCanEdit()) {
+            listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    TextView valueText = (TextView) v.getTag();
+                    showSelectTime(context, valueText);
+                }
+            };
+        }
+        TextView valueText = getTimeLayout(rowLayout, listener);
         valueText.setText(viewCls.getFieldValue());
         // valueText.setTag(viewCls.getFieldName());
 
@@ -497,7 +534,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         return value_tv;
     }
 
-    //时间选择
+    //日期选择
     private TextView getDateLayout(LinearLayout parentView, View.OnClickListener listener) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -538,7 +575,47 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
 
         return value_tv;
     }
+    //时间选择
+    private TextView getTimeLayout(LinearLayout parentView, View.OnClickListener listener) {
+        RelativeLayout oneLayout = new RelativeLayout(context);
+        LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                UIUtils.dp2Px(fontSize + 30));
+        oneLayout.setLayoutParams(llsub);
+        oneLayout.setBackground(context.getDrawable(R.drawable.textbackground_report));
 
+        //向下箭头
+        int rid = minrRID;
+        minrRID++;
+        ImageView imageView = new ImageView(context);
+        imageView.setId(rid);
+        RelativeLayout.LayoutParams ll_image = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ll_image.addRule(RelativeLayout.CENTER_VERTICAL);
+        ll_image.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        ll_image.setMargins(0, 0, UIUtils.dp2Px(10), 0);
+        imageView.setLayoutParams(ll_image);
+        imageView.setBackground(context.getDrawable(R.drawable.icon_calendar_time));
+        //内容
+        TextView value_tv = new TextView(context);
+        RelativeLayout.LayoutParams ll_value_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ll_value_tv.setMargins(UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5), UIUtils.dp2Px(5));
+        ll_value_tv.addRule(RelativeLayout.CENTER_VERTICAL);
+        value_tv.setLayoutParams(ll_value_tv);
+        value_tv.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+        value_tv.setTextColor(context.getResources().getColor(R.color.black));
+        value_tv.setTextSize(UIUtils.dp2sp(fontSize));
+        value_tv.setHint("请选择");
+        ll_value_tv.addRule(RelativeLayout.LEFT_OF, rid);
+
+        oneLayout.addView(imageView);
+        oneLayout.addView(value_tv);
+        oneLayout.setTag(value_tv);
+        oneLayout.setOnClickListener(listener);
+        parentView.addView(oneLayout);
+
+        return value_tv;
+    }
     private TextView getMapLayout(LinearLayout parentView, View.OnClickListener listener) {
         RelativeLayout oneLayout = new RelativeLayout(context);
         LinearLayout.LayoutParams llsub = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -609,7 +686,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         value_tv.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         value_tv.setTextColor(context.getResources().getColor(R.color.black));
         value_tv.setTextSize(UIUtils.dp2sp(fontSize));
-        value_tv.setHint("选择位置");
+        value_tv.setHint("请点击右侧按钮操作");
         ll_value_tv.addRule(RelativeLayout.LEFT_OF, rid);
 
         oneLayout.addView(imageView);
@@ -953,7 +1030,7 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
         String dates = textView.getText().toString();
         String[] dds = dates.split("-");
         int year = 0, month = 0, day = 0;
-        if (dds == null || dds.length != 3) {
+        if (dds.length == 3) {
             try {
                 year = Integer.parseInt(dds[0]);
                 month = Integer.parseInt(dds[1]) - 1;
@@ -990,6 +1067,46 @@ public class MXViewManager implements ObjectSelectItemOnClickListener {
                 textView.setText(ss);
             }
         }, year, month, day).show();
+    }
+
+    private void showSelectTime(Context context, final TextView textView) {
+        String dates = textView.getText().toString();
+        String[] dds = dates.split(":");
+        int hour = 0, minute = 0;
+        if (dds.length == 2) {
+            try {
+                hour = Integer.parseInt(dds[0]);
+                minute = Integer.parseInt(dds[1]);
+            } catch (Exception e) {
+
+            }
+        }
+        if (hour == 0 || minute == 0) {
+
+            Calendar cd = Calendar.getInstance();
+            Date date = new Date();
+            cd.setTime(date);
+            hour = cd.get(Calendar.HOUR_OF_DAY);
+            minute = cd.get(Calendar.MINUTE);
+
+        }
+
+        new TimePickerDialog(context, AlertDialog.THEME_HOLO_LIGHT, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String sHour = hourOfDay + "";
+                if (sHour.length() == 1) {
+                    sHour = "0" + sHour;
+                }
+                String sMinute = minute + "";
+                if (sMinute.length() == 1) {
+                    sMinute = "0" + sMinute;
+                }
+
+                String ss = String.format("%s:%s", sHour, sMinute);
+                textView.setText(ss);
+            }
+        }, hour, minute, true).show();
     }
 
     @Override
